@@ -49,7 +49,7 @@ class HandMadeKNN:
         
         if isinstance(to_predict, pd.core.frame.DataFrame):
             length = list(to_predict.index)
-        elif isinstance(to_predict[0], list):
+        elif isinstance(to_predict[0], list) or isinstance(to_predict[0], np.ndarray):
             length = range(len(to_predict))
         else:
             length = [0]
@@ -75,7 +75,7 @@ class HandMadeKNN:
         
         if isinstance(to_predict, pd.core.frame.DataFrame):
             to_predict = to_predict.loc[index]
-        elif isinstance(to_predict[0], list):
+        elif isinstance(to_predict[0], list) or isinstance(to_predict[0], np.ndarray):
             to_predict = to_predict[index]
     
         for i in list(self.X_train.index):
