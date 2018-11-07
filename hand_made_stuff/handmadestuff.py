@@ -9,6 +9,7 @@ import operator
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn import datasets
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 # Defining a function which calculates euclidean distance between two data points
 def euclidian_distance(point1, point2):
@@ -168,7 +169,7 @@ def calculate_efficiency(cm):
         
     return sum_predicted / sum_total
 
-def visualise_classifier(classifier, X_train, y_train):
+def visualise_classifier(dataset_name, classifier, X_train, y_train):
     """Function that contains all steps of the code which visualises the classifier's results"""
     
     from matplotlib.colors import ListedColormap
@@ -184,14 +185,14 @@ def visualise_classifier(classifier, X_train, y_train):
     for i, j in enumerate(np.unique(y_set)):
         plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
                     c = ListedColormap(('red', 'green', 'blue'))(i),
-                    label = iris.target_names[int(j)], s = 50)
+                    label = dataset_name.target_names[int(j)], s = 50)
     plt.xlabel('\nPrincipal Component 1', fontsize = 15)
     plt.ylabel('Principal Component 2', fontsize = 15)
     plt.title('\n2 component PCA\n', fontsize = 20)
     plt.legend()
     plt.show()
     
-def fit_predict_report(classifier_name, X_train, y_train, X_test, y_test, 
+def fit_predict_report(dataset_name, classifier_name, X_train, y_train, X_test, y_test, 
                        n_neighbors = 5, svc_kernel = 'rbf', svc_c = 1,
                       visualise = False):
     """Function that calculates precision of the chosen classifier
@@ -226,4 +227,4 @@ def fit_predict_report(classifier_name, X_train, y_train, X_test, y_test,
     print('Classification report:\n\n', classification_report(y_test, y_pred))
     
     if visualise:
-        visualise_classifier(classifier, X_train, y_train)
+        visualise_classifier(dataset_name, classifier, X_train, y_train)
