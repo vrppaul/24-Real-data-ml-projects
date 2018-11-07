@@ -167,3 +167,63 @@ def calculate_efficiency(cm):
         sum_predicted += cm[i][i]
         
     return sum_predicted / sum_total
+
+def visualise_classifier(classifier, X_train, y_train):
+    """Function that contains all steps of the code which visualises the classifier's results"""
+    
+    from matplotlib.colors import ListedColormap
+    X_set, y_set = X_train, y_train
+    X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
+                         np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
+    
+    plt.figure(figsize = (10,10)) 
+    plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+                 alpha = 0.75, cmap = ListedColormap(('red', 'green', 'blue')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                    c = ListedColormap(('red', 'green', 'blue'))(i),
+                    label = iris.target_names[int(j)], s = 50)
+    plt.xlabel('\nPrincipal Component 1', fontsize = 15)
+    plt.ylabel('Principal Component 2', fontsize = 15)
+    plt.title('\n2 component PCA\n', fontsize = 20)
+    plt.legend()
+    plt.show()
+    
+def fit_predict_report(classifier_name, X_train, y_train, X_test, y_test, 
+                       n_neighbors = 5, svc_kernel = 'rbf', svc_c = 1,
+                      visualise = False):
+    """Function that calculates precision of the chosen classifier
+    
+    If visualise == True, a plot of given classifier for given data is plotted"""
+    if classifier_name == 'knn':
+        from sklearn.neighbors import KNeighborsClassifier
+        classifier = KNeighborsClassifier(n_neighbors = n_neighbors)
+    elif classifier_name == 'svc':
+        from sklearn.svm import SVC
+        classifier = SVC(kernel = svc_kernel, C = svc_c)
+    elif classifier_name == 'lr':
+        from sklearn.linear_model import LogisticRegression
+        classifier = LogisticRegression()
+     
+    # Fitting classifier to the Training set
+    classifier.fit(X_train, y_train)
+    
+    # Predicting the Test set results
+    y_pred = classifier.predict(X_test)
+    
+    # Printing the name of the classifier
+    print("Classificator used:\n {}\n\n".format(classifier_name))
+    
+    # Confusion matrix
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(y_test, y_pred)
+    print('Confusion matrix: \n\n', cm, '\n\n')
+    
+    # Displaying reports
+    from sklearn.metrics import classification_report
+    print('Classification report:\n\n', classification_report(y_test, y_pred))
+    
+    if visualise:
+        visualise_classifier(classifier, X_train, y_train)
