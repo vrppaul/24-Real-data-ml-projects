@@ -193,7 +193,7 @@ def visualise_classifier(dataset_name, classifier, X_train, y_train):
     plt.show()
     
 def fit_predict_report(dataset_name, classifier_name, X_train, y_train, X_test, y_test, 
-                       n_neighbors = 5, svc_kernel = 'rbf', svc_c = 1,
+                       n_neighbors = 5, svc_kernel = 'rbf', svc_c = 1, n_estimators = 10,
                       visualise = False):
     """Function that calculates precision of the chosen classifier
     
@@ -207,6 +207,13 @@ def fit_predict_report(dataset_name, classifier_name, X_train, y_train, X_test, 
     elif classifier_name == 'lr':
         from sklearn.linear_model import LogisticRegression
         classifier = LogisticRegression()
+    elif classifier_name == 'nb':
+        from sklearn.naive_bayes import GaussianNB
+        classifier = GaussianNB()
+    elif classifier_name == 'rf':
+        from sklearn.ensemble import RandomForestClassifier
+        classifier = RandomForestClassifier(n_estimators = n_estimators, criterion = 'entropy',
+                                            random_state = 0)
      
     # Fitting classifier to the Training set
     classifier.fit(X_train, y_train)
